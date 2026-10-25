@@ -11,3 +11,5 @@ python-multipart>=0.0.9
 pillow>=10.0.0
 numpy>=1.26.0
 dnspython>=2.6.0
+python-whois>=0.9.0
+email-validator>=2.0.0

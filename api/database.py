@@ -3,16 +3,37 @@ import sqlite3
 import json
 import hashlib
 import secrets
+import tempfile
 from datetime import datetime, timezone
 
-import tempfile
+def get_db_path() -> str:
+    # 1. Check for any cloud/serverless environment variable (Vercel, AWS Lambda, etc.)
+    cloud_vars = [
+        "VERCEL", "VERCEL_ENV", "VERCEL_URL", "VERCEL_REGION",
+        "NOW_REGION", "AWS_LAMBDA_FUNCTION_NAME", "LAMBDA_TASK_ROOT"
+    ]
+    if any(os.getenv(k) for k in cloud_vars):
+        tmp_dir = os.path.join(tempfile.gettempdir(), "scamshield")
+        os.makedirs(tmp_dir, exist_ok=True)
+        return os.path.join(tmp_dir, "scamshield.db")
 
-IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
-if IS_VERCEL:
-    DB_DIR = os.path.join(tempfile.gettempdir(), "scamshield")
-else:
-    DB_DIR = os.path.join(os.path.dirname(__file__), "data")
-DB_PATH = os.path.join(DB_DIR, "scamshield.db")
+    # 2. Check if local backend/api directory is writable
+    local_dir = os.path.join(os.path.dirname(__file__), "data")
+    try:
+        os.makedirs(local_dir, exist_ok=True)
+        test_file = os.path.join(local_dir, ".write_test")
+        with open(test_file, "w") as f:
+            f.write("1")
+        os.remove(test_file)
+        return os.path.join(local_dir, "scamshield.db")
+    except Exception:
+        # Fallback to temp directory on any permission/read-only restriction
+        tmp_dir = os.path.join(tempfile.gettempdir(), "scamshield")
+        os.makedirs(tmp_dir, exist_ok=True)
+        return os.path.join(tmp_dir, "scamshield.db")
+
+DB_PATH = get_db_path()
+DB_DIR = os.path.dirname(DB_PATH)
 
 def hash_password(password: str) -> str:
     salt = secrets.token_hex(16)
@@ -28,12 +49,29 @@ def verify_password(stored_password: str, provided_password: str) -> bool:
         return False
 
 def connect():
-    os.makedirs(DB_DIR, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH, timeout=15)
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    conn = sqlite3.connect(DB_PATH, timeout=20)
     conn.row_factory = sqlite3.Row
     return conn
 
+_DB_INITIALIZED = False
+
+def ensure_db_ready():
+    global _DB_INITIALIZED
+    if _DB_INITIALIZED:
+        return
+    try:
+        with connect() as conn:
+            c = conn.execute("SELECT COUNT(*) as c FROM sqlite_master WHERE type='table' AND name='users'").fetchone()
+            if not c or c["c"] == 0:
+                init_db()
+            else:
+                _DB_INITIALIZED = True
+    except Exception:
+        init_db()
+
 def init_db():
+    global _DB_INITIALIZED
     with connect() as conn:
         # 1. Scans table with advanced AI/ML/DL telemetry
         conn.execute("""
@@ -122,7 +160,7 @@ def init_db():
             CREATE TABLE IF NOT EXISTS domain_reputation (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 domain TEXT UNIQUE NOT NULL,
-                reputation TEXT NOT NULL, -- 'malicious', 'suspicious', 'trusted'
+                reputation TEXT NOT NULL,
                 source TEXT DEFAULT 'ScamShield Intel',
                 category TEXT DEFAULT 'Phishing',
                 confidence INTEGER DEFAULT 95,
@@ -195,10 +233,12 @@ def init_db():
             """, initial_reports)
 
         conn.commit()
+        _DB_INITIALIZED = True
 
 # --- Scan DB Queries ---
 
 def insert_scan(result: dict, user_id: int = None) -> int:
+    ensure_db_ready()
     with connect() as conn:
         now = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M:%S")
         report_hash = hashlib.sha256(f"{result['url']}-{now}-{result['score']}".encode()).hexdigest()[:16]
@@ -236,6 +276,7 @@ def insert_scan(result: dict, user_id: int = None) -> int:
         return cur.lastrowid
 
 def list_scans(limit=25, user_id=None):
+    ensure_db_ready()
     with connect() as conn:
         if user_id:
             rows = conn.execute("""
@@ -254,6 +295,7 @@ def list_scans(limit=25, user_id=None):
     return [dict(r) for r in rows]
 
 def get_scan(scan_id: int):
+    ensure_db_ready()
     with connect() as conn:
         row = conn.execute("SELECT * FROM scans WHERE id = ?", (scan_id,)).fetchone()
     if not row:
@@ -270,6 +312,7 @@ def get_scan(scan_id: int):
     return item
 
 def scan_stats():
+    ensure_db_ready()
     with connect() as conn:
         row = conn.execute("""
             SELECT 
@@ -347,6 +390,7 @@ def scan_stats():
 # --- User & Auth Queries ---
 
 def create_user(email: str, password: str, full_name: str, role: str = "user"):
+    ensure_db_ready()
     with connect() as conn:
         now = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M:%S")
         api_key = f"scam_ak_{role}_" + secrets.token_hex(16)
@@ -362,21 +406,25 @@ def create_user(email: str, password: str, full_name: str, role: str = "user"):
             return None
 
 def get_user_by_email(email: str):
+    ensure_db_ready()
     with connect() as conn:
         row = conn.execute("SELECT * FROM users WHERE email = ?", (email.lower().strip(),)).fetchone()
     return dict(row) if row else None
 
 def get_user_by_id(user_id: int):
+    ensure_db_ready()
     with connect() as conn:
         row = conn.execute("SELECT id, email, full_name, role, api_key, is_active, created_at FROM users WHERE id = ?", (user_id,)).fetchone()
     return dict(row) if row else None
 
 def get_user_by_api_key(api_key: str):
+    ensure_db_ready()
     with connect() as conn:
         row = conn.execute("SELECT id, email, full_name, role, is_active FROM users WHERE api_key = ?", (api_key.strip(),)).fetchone()
     return dict(row) if row else None
 
 def list_all_users():
+    ensure_db_ready()
     with connect() as conn:
         rows = conn.execute("SELECT id, email, full_name, role, is_active, created_at FROM users ORDER BY id ASC").fetchall()
     return [dict(r) for r in rows]
@@ -384,6 +432,7 @@ def list_all_users():
 # --- Community Reports Queries ---
 
 def add_community_report(url: str, domain: str, threat_category: str, description: str, severity: str, evidence_notes: str, user_id=None, reporter_name="Anonymous"):
+    ensure_db_ready()
     with connect() as conn:
         now = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M:%S")
         cur = conn.execute("""
@@ -395,6 +444,7 @@ def add_community_report(url: str, domain: str, threat_category: str, descriptio
         return cur.lastrowid
 
 def list_community_reports(limit=30):
+    ensure_db_ready()
     with connect() as conn:
         rows = conn.execute("""
             SELECT * FROM community_reports ORDER BY upvotes DESC, id DESC LIMIT ?
@@ -402,6 +452,7 @@ def list_community_reports(limit=30):
     return [dict(r) for r in rows]
 
 def upvote_community_report(report_id: int):
+    ensure_db_ready()
     with connect() as conn:
         conn.execute("UPDATE community_reports SET upvotes = upvotes + 1 WHERE id = ?", (report_id,))
         conn.commit()
@@ -413,12 +464,14 @@ def upvote_community_report(report_id: int):
 def check_domain_reputation(domain: str):
     if not domain:
         return None
+    ensure_db_ready()
     d = domain.lower().strip()
     with connect() as conn:
         row = conn.execute("SELECT * FROM domain_reputation WHERE domain = ?", (d,)).fetchone()
     return dict(row) if row else None
 
 def add_audit_log(action: str, target: str = "", details: str = "", user_id: int = None, ip_address: str = ""):
+    ensure_db_ready()
     with connect() as conn:
         now = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M:%S")
         conn.execute("""
@@ -428,6 +481,7 @@ def add_audit_log(action: str, target: str = "", details: str = "", user_id: int
         conn.commit()
 
 def get_recent_audit_logs(limit=25):
+    ensure_db_ready()
     with connect() as conn:
         rows = conn.execute("""
             SELECT a.*, u.email as user_email, u.role as user_role
@@ -437,9 +491,8 @@ def get_recent_audit_logs(limit=25):
         """, (limit,)).fetchall()
     return [dict(r) for r in rows]
 
-# Ensure DB tables and default seed data are initialized
+# Auto-initialize
 try:
-    init_db()
+    ensure_db_ready()
 except Exception:
     pass
-
