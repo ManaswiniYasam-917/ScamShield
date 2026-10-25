@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ScamShield Enterprise — Autonomous Cyber Fraud & AI Threat Defense</title>
+  <meta name="description" content="State-of-the-art multi-engine AI scam and phishing detection platform powered by Scikit-Learn ensembles, PyTorch Deep Learning 1D-CNN+BiGRU, and Quishing QR Shield.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <a href="#" class="brand" id="brand-logo">
+      <div class="brand-icon">🛡️</div>
+      <div class="brand-text">
+        <b>Scam<span>Shield</span></b>
+        <small>Enterprise AI Defense</small>
+      </div>
+    </a>
+
+    <!-- NAV TABS -->
+    <nav class="nav-tabs" id="nav-tabs">
+      <button class="nav-tab-btn active" data-tab="scanner">🛡️ Deep Scanner</button>
+      <button class="nav-tab-btn" data-tab="batch">⚡ Batch Matrix</button>
+      <button class="nav-tab-btn" data-tab="quishing">📱 Quishing QR</button>
+      <button class="nav-tab-btn" data-tab="brand">🔍 Brand Protection</button>
+      <button class="nav-tab-btn" data-tab="vault">🌐 Threat Vault</button>
+      <button class="nav-tab-btn" data-tab="soc">📊 SOC Analytics</button>
+    </nav>
+
+    <!-- RIGHT STATUS & USER -->
+    <div class="topbar-right">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span id="system-status-text">Neural Core Active</span>
+      </div>
+
+      <!-- User Auth State -->
+      <div class="user-menu" id="auth-container">
+        <!-- Injected via JavaScript -->
+        <button id="login-modal-btn" class="btn-primary">Sign In / Demo</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="hero-tag">⚡ AUTONOMOUS FRAUD INTELLIGENCE · VERSION 3.0</div>
+        <h1 class="hero-title">
+          Know before you click.<br>
+          <span class="gradient-text">Autonomous AI Threat Defense.</span>
+        </h1>
+        <p class="hero-desc">
+          Inspect shopping websites, fake invoice portals, and credential harvesters with our multi-model neural core:
+          Scikit-Learn Ensembles, PyTorch Character-Level Deep Learning, Typosquatting Heuristics, and Quishing QR Matrix analysis.
+        </p>
+      </div>
+      <div class="hero-metrics">
+        <div class="hero-stat-box">
+          <b id="hero-total-scans">—</b>
+          <small>Audits Completed</small>
+        </div>
+        <div class="hero-stat-box">
+          <b id="hero-flagged-scans" style="color:var(--crimson)">—</b>
+          <small>Threats Blocked</small>
+        </div>
+        <div class="hero-stat-box">
+          <b style="color:var(--emerald)">~18ms</b>
+          <small>AI Latency</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: SINGLE URL AI DEEP SCANNER -->
+    <!-- ========================================== -->
+    <section id="tab-scanner" class="tab-content active">
+      <div class="scanner-card glass">
+        <div class="section-title">
+          <div>
+            <span class="hero-tag" style="margin-bottom:6px">MULTI-ENGINE AUDIT</span>
+            <h2 style="font-size:22px;letter-spacing:-0.5px">Real-Time Threat Inspector</h2>
+          </div>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">TARGET / FULL URL</span>
+        </div>
+
+        <form id="scan-form">
+          <div class="scan-input-group">
+            <span class="scan-input-prefix">TARGET ➔</span>
+            <input id="scan-url" class="scan-input" type="text" placeholder="https://store-discount-portal.xyz or suspicious link..." autocomplete="off" required>
+            <button id="scan-btn" class="scan-submit-btn" type="submit">
+              <span>Inspect Threat Profile</span> ➔
+            </button>
+          </div>
+        </form>
+
+        <!-- Quick Demo Chips -->
+        <div class="demo-bar">
+          <span style="font-weight:600">Quick Test Demos:</span>
+          <button class="demo-chip" data-url="http://paypa1-account-verification-support.com/login.php">🚨 PayPal Phish</button>
+          <button class="demo-chip" data-url="https://amazon-prime-renewal-billing.xyz/claim">🚨 Amazon Fake Billing</button>
+          <button class="demo-chip" data-url="http://binance-wallets-gift-claim.site/airdrop">🚨 Crypto Drainer</button>
+          <button class="demo-chip" data-url="https://google.com">✓ Google (Safe)</button>
+          <button class="demo-chip" data-url="https://apple.com">✓ Apple (Safe)</button>
+        </div>
+
+        <!-- Scan Result Area -->
+        <div id="scan-result" class="result-container" style="display:none">
+          <div class="result-hero">
+            <!-- Circular Gauge Card -->
+            <div class="gauge-card">
+              <svg class="gauge-svg" viewBox="0 0 160 160">
+                <circle class="gauge-bg" cx="80" cy="80" r="65"></circle>
+                <circle id="gauge-circle" class="gauge-progress" cx="80" cy="80" r="65" stroke="#00f2fe" stroke-dasharray="408.4" stroke-dashoffset="408.4"></circle>
+              </svg>
+              <div class="gauge-text">
+                <div id="gauge-score-val" class="gauge-score">0</div>
+                <div class="gauge-max">OUT OF 100</div>
+              </div>
+              <div id="gauge-tier-pill" class="tier-badge low">LOWER RISK</div>
+              <div style="margin-top:14px">
+                <a id="download-report-btn" href="#" target="_blank" rel="noopener" class="btn-primary" style="font-size:12px;padding:6px 14px">
+                  📥 Download PDF Dossier
+                </a>
+              </div>
+            </div>
+
+            <!-- AI Engine Diagnostics Grid -->
+            <div class="engines-grid">
+              <div class="engine-tile">
+                <div>
+                  <div class="engine-tile-header">
+                    <span class="engine-name">🧠 PyTorch Deep Learning</span>
+                    <span id="diag-dl-score" class="engine-stat" style="color:var(--cyan)">0.0%</span>
+                  </div>
+                  <div id="diag-dl-desc" class="engine-desc">Character-level 1D-CNN + BiGRU sequence classifier evaluating n-gram character transitions.</div>
+                </div>
+                <div id="diag-dl-hotspots" style="font-family:var(--font-mono);font-size:11px;color:var(--crimson);margin-top:6px"></div>
+              </div>
+
+              <div class="engine-tile">
+                <div>
+                  <div class="engine-tile-header">
+                    <span class="engine-name">🌲 Scikit-Learn Ensemble</span>
+                    <span id="diag-ml-score" class="engine-stat" style="color:var(--blue)">0.0%</span>
+                  </div>
+                  <div id="diag-ml-desc" class="engine-desc">Random Forest model evaluating 28 lexical, structural, and Shannon entropy indicators.</div>
+                </div>
+                <div id="diag-ml-features" style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);margin-top:6px"></div>
+              </div>
+
+              <div class="engine-tile">
+                <div>
+                  <div class="engine-tile-header">
+                    <span class="engine-name">🔍 Brand Typosquatting</span>
+                    <span id="diag-brand-status" class="engine-stat" style="color:var(--amber)">None</span>
+                  </div>
+                  <div id="diag-brand-desc" class="engine-desc">Homoglyph, IDN Cyrillic, and Levenshtein edit distance check against 50+ major brands.</div>
+                </div>
+              </div>
+
+              <div class="engine-tile">
+                <div>
+                  <div class="engine-tile-header">
+                    <span class="engine-name">🔒 TLS & Cryptographic Layer</span>
+                    <span id="diag-ssl-status" class="engine-stat" style="color:var(--emerald)">Valid</span>
+                  </div>
+                  <div id="diag-ssl-desc" class="engine-desc">Live handshake, Certificate Authority issuer, cipher strength, and expiration countdown.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Forensic Risk Signals -->
+          <div class="signals-section">
+            <div class="section-title">
+              <span>Forensic Risk Indicators & Explainable Factors</span>
+              <span id="signal-count" style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">0 SIGNALS</span>
+            </div>
+            <div id="signals-container" class="signals-grid"></div>
+          </div>
+
+          <!-- Action Guidance Recommendation -->
+          <div id="action-guidance" class="action-banner critical">
+            <div class="action-text">
+              <b id="action-headline">CRITICAL THREAT WARNING</b>
+              <p id="action-body">Do not enter credentials, credit cards, or personal data on this website.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Scans Table on Home Tab -->
+      <div class="table-card glass">
+        <div class="section-title">
+          <div>
+            <span class="hero-tag" style="margin-bottom:4px">AUDIT TRAIL</span>
+            <h3 style="font-size:18px">Recent Threat Audits</h3>
+          </div>
+          <button id="refresh-scans-btn" class="btn-secondary">↻ Refresh History</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Target Domain</th>
+                <th>Risk Score</th>
+                <th>Classification</th>
+                <th>ML Ensemble</th>
+                <th>Deep Learning</th>
+                <th>Timestamp</th>
+                <th>Dossier</th>
+              </tr>
+            </thead>
+            <tbody id="scans-table-body">
+              <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">Loading recent audit records...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: BATCH URL MATRIX -->
+    <!-- ========================================== -->
+    <section id="tab-batch" class="tab-content">
+      <div class="table-card glass">
+        <div class="section-title">
+          <div>
+            <span class="hero-tag" style="margin-bottom:4px">PARALLEL AUDIT ENGINE</span>
+            <h2 style="font-size:22px">Batch URL Multi-Scanner</h2>
+          </div>
+          <button id="load-batch-demo-btn" class="btn-secondary">⚡ Load Demo List</button>
+        </div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">
+          Paste multiple website URLs (one per line, up to 50 URLs). Our asynchronous multi-threaded engine will audit all targets concurrently.
+        </p>
+        <textarea id="batch-input" class="batch-textarea" placeholder="https://example1.com&#10;http://phishing-site-example.xyz&#10;https://another-url.org"></textarea>
+        
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
+          <span id="batch-counter" style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">0 URLs detected</span>
+          <button id="run-batch-btn" class="btn-primary">
+            <span>Execute Batch Scan</span> ➔
+          </button>
+        </div>
+
+        <div id="batch-results-area" style="margin-top:24px;display:none">
+          <div class="section-title">
+            <span id="batch-stats-summary" style="font-family:var(--font-mono);font-size:14px;color:var(--cyan)">Batch Execution Complete</span>
+            <button id="export-batch-btn" class="btn-secondary">📥 Export JSON</button>
+          </div>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>URL</th>
+                  <th>Risk Score</th>
+                  <th>Risk Tier</th>
+                  <th>Classification</th>
+                  <th>Brand Spoof</th>
+                  <th>Dossier</th>
+                </tr>
+              </thead>
+              <tbody id="batch-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: QUISHING QR CODE SHIELD -->
+    <!-- ========================================== -->
+    <section id="tab-quishing" class="tab-content">
+      <div class="scanner-card glass">
+        <div class="section-title">
+          <div>
+            <span class="hero-tag" style="margin-bottom:4px">ANTI-QUISHING DEFENSE</span>
+            <h2 style="font-size:22px">QR Code Optical Fraud Scanner</h2>
+          </div>
+          <button id="demo-qr-btn" class="btn-secondary">⚡ Test with Phishing QR Demo</button>
+        </div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">
+          Quishing (QR Phishing) bypasses traditional email filters by embedding fraudulent links inside optical barcodes. 
+          Upload or drag-and-drop any QR code image for computer-vision extraction and full neural threat analysis.
+        </p>
+
+        <div id="qr-dropzone" class="qr-dropzone">
+          <div class="qr-icon">📷</div>
+          <b style="font-size:15px;display:block;margin-bottom:6px">Drag & Drop QR Code Image or Click to Browse</b>
+          <p style="font-size:12px;color:var(--text-muted)">Supports PNG, JPG, JPEG, WebP barcodes</p>
+          <input type="file" id="qr-file-input" accept="image/*" style="display:none">
+        </div>
+
+        <!-- QR Scan Result Area -->
+        <div id="qr-result-area" style="margin-top:24px;display:none">
+          <div class="section-title">
+            <span style="color:var(--cyan)">QR Matrix Decoded</span>
+            <span id="qr-resolution" style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)"></span>
+          </div>
+          <div style="background:rgba(7,10,18,0.7);border:1px solid var(--border-subtle);border-radius:8px;padding:14px;margin-bottom:20px">
+            <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-family:var(--font-mono)">Extracted Destination URL:</span>
+            <div id="qr-decoded-url" style="font-family:var(--font-mono);font-size:14px;color:var(--cyan);word-break:break-all;margin-top:4px"></div>
+          </div>
+          <div id="qr-threat-card"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: BRAND PROTECTION & TYPOSQUATTING -->
+    <!-- ========================================== -->
+    <section id="tab-brand" class="tab-content">
+      <div class="table-card glass">
+        <div class="section-title">
+          <div>
+            <span class="hero-tag" style="margin-bottom:4px">CORP DEFENSE</span>
+            <h2 style="font-size:22px">Brand Typosquatting & Homoglyph Analyzer</h2>
+          </div>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">50+ PROTECTED CORPORATE ENTITIES</span>
+        </div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">
+          Adversaries register deceptively similar domains (e.g., Cyrillic character substitutions or compound subdomain labels) to mimic trusted banking, e-commerce, and cloud providers.
+        </p>
+
+        <div class="scan-input-group" style="margin-bottom:20px">
+          <span class="scan-input-prefix">DOMAIN ➔</span>
+          <input id="brand-input" class="scan-input" type="text" placeholder="e.g. paypa1.com or login-chase-update.xyz" autocomplete="off">
+          <button id="brand-btn" class="scan-submit-btn">Check Brand Distance</button>
+        </div>
+
+        <div id="brand-result-area" style="display:none"></div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: COMMUNITY THREAT VAULT -->
+    <!-- ========================================== -->
+    <section id="tab-vault" class="tab-content">
+      <div class="table-card glass">
+        <div class="section-title">
+          <div>
+            <span class="hero-tag" style="margin-bottom:4px">COMMUNITY RADAR</span>
+            <h2 style="font-size:22px">Verified Threat Vault & Scam Blacklist</h2>
+          </div>
+          <button id="open-report-modal-btn" class="btn-primary">🚨 Report New Scam</button>
+        </div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">
+          Crowdsourced and SOC-analyst verified fraud domains, crypto drainers, and counterfeit e-commerce operations.
+        </p>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Threat Domain</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Description</th>
+                <th>Reporter</th>
+                <th>Community Votes</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="vault-table-body">
+              <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">Loading community threat database...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 6: SOC CYBER ANALYTICS & AUDIT LOGS -->
+    <!-- ========================================== -->
+    <section id="tab-soc" class="tab-content">
+      <!-- 4 Key Telemetry Metrics -->
+      <div class="analytics-grid">
+        <div class="metric-tile">
+          <div class="metric-icon-wrap cyan">🛡️</div>
+          <div class="metric-stat">
+            <b id="soc-total-scans">—</b>
+            <small>Total Audits Conducted</small>
+          </div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-icon-wrap crimson">🚨</div>
+          <div class="metric-stat">
+            <b id="soc-high-risk">—</b>
+            <small>High Risk & Critical Threats</small>
+          </div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-icon-wrap amber">🌐</div>
+          <div class="metric-stat">
+            <b id="soc-unique-domains">—</b>
+            <small>Unique Domains Monitored</small>
+          </div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-icon-wrap emerald">🧠</div>
+          <div class="metric-stat">
+            <b id="soc-ml-flagged">—</b>
+            <small>Neural & ML Interceptions</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Split Panel -->
+      <div class="charts-split">
+        <div class="chart-panel">
+          <div class="section-title">
+            <h3 style="font-size:16px">Last 7 Active Days Volume</h3>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">DAILY THREAT PATTERN</span>
+          </div>
+          <div id="soc-daily-chart"></div>
+        </div>
+
+        <div class="chart-panel">
+          <div class="section-title">
+            <h3 style="font-size:16px">Top Flagged Malicious Domains</h3>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">CRITICAL RISK</span>
+          </div>
+          <div id="soc-top-domains"></div>
+        </div>
+      </div>
+
+      <!-- Security Audit Trail Log -->
+      <div class="table-card glass">
+        <div class="section-title">
+          <div>
+            <span class="hero-tag" style="margin-bottom:4px">AUDIT LOGGING</span>
+            <h3 style="font-size:17px">System Security Audit Trail</h3>
+          </div>
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">IMMUTABLE SQLITE LOGS</span>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Details</th>
+                <th>User / Identity</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="soc-audit-table-body">
+              <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted)">Loading audit trail...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODALS -->
+  <!-- ========================================== -->
+
+  <!-- AUTH MODAL -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="auth-modal-title" style="font-size:18px">ScamShield Authentication</h3>
+        <button class="modal-close" id="auth-modal-close">&times;</button>
+      </div>
+
+      <!-- Quick 1-Click Demo Buttons -->
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:8px;padding:12px;margin-bottom:18px">
+        <span style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:8px;font-family:var(--font-mono)">1-CLICK INSTANT DEMO LOGIN:</span>
+        <div style="display:flex;gap:8px">
+          <button class="demo-login-chip btn-secondary" data-role="admin">👑 Admin</button>
+          <button class="demo-login-chip btn-secondary" data-role="analyst">🔬 Analyst</button>
+          <button class="demo-login-chip btn-secondary" data-role="user">👤 User</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--border-subtle);padding-bottom:10px">
+        <button id="toggle-signin-tab" class="btn-secondary" style="border-color:var(--cyan);color:var(--cyan)">Sign In</button>
+        <button id="toggle-register-tab" class="btn-secondary">Register New</button>
+      </div>
+
+      <form id="auth-form">
+        <div class="form-group" id="fullname-group" style="display:none">
+          <label>Full Name</label>
+          <input id="auth-name" class="form-input" type="text" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input id="auth-email" class="form-input" type="email" placeholder="user@scamshield.io" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input id="auth-password" class="form-input" type="password" placeholder="••••••••" required>
+        </div>
+        <button id="auth-submit-btn" type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:10px">
+          Authenticate
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- API KEY & DEVELOPER DRAWER MODAL -->
+  <div id="apikey-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size:18px">Developer API & Access Key</h3>
+        <button class="modal-close" id="apikey-modal-close">&times;</button>
+      </div>
+      <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:14px">
+        Use this persistent API Key in the <code>Authorization: Bearer &lt;API_KEY&gt;</code> header to integrate ScamShield with your security SIEM, SOAR, or web crawlers.
+      </p>
+      <div style="background:rgba(7,10,18,0.9);border:1px solid var(--border-subtle);border-radius:8px;padding:12px;margin-bottom:16px">
+        <div id="current-api-key" style="font-family:var(--font-mono);font-size:12px;color:var(--cyan);word-break:break-all"></div>
+      </div>
+      <button id="copy-api-key-btn" class="btn-primary" style="width:100%;justify-content:center">
+        📋 Copy API Key to Clipboard
+      </button>
+    </div>
+  </div>
+
+  <!-- REPORT SCAM MODAL -->
+  <div id="report-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size:18px">Submit Scam Domain Report</h3>
+        <button class="modal-close" id="report-modal-close">&times;</button>
+      </div>
+      <form id="report-form">
+        <div class="form-group">
+          <label>Suspicious Website URL</label>
+          <input id="report-url" class="form-input" type="url" placeholder="https://fake-discount-store.xyz" required>
+        </div>
+        <div class="form-group">
+          <label>Threat Category</label>
+          <select id="report-category" class="form-input">
+            <option value="Fake E-Commerce">Fake E-Commerce / Non-Delivery</option>
+            <option value="Credential Phishing">Credential Phishing</option>
+            <option value="Crypto Drainer">Crypto Drainer / Fake Web3 Airdrop</option>
+            <option value="Counterfeit Store">Counterfeit Luxury Goods</option>
+            <option value="Subscription Scam">Hidden Recurring Subscription</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Severity</label>
+          <select id="report-severity" class="form-input">
+            <option value="critical">Critical Threat</option>
+            <option value="high" selected>High Risk</option>
+            <option value="medium">Medium Risk</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Incident Evidence & Notes</label>
+          <textarea id="report-desc" class="form-input" rows="3" placeholder="Describe the scam indicators, unauthorized charges, or stolen brand..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center">
+          Submit to Verified Threat Vault
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <b>ScamShield Enterprise</b> · Autonomous AI Cyber Fraud Defense Platform
+    </div>
+    <div style="display:flex;gap:18px">
+      <a href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener" style="color:var(--cyan);text-decoration:none">Interactive API Docs ↗</a>
+      <span>SQLite WAL · PyTorch · Scikit-Learn</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
